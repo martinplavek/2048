@@ -15,7 +15,7 @@ interface TopPlayersQueryItem {
     score: number;
 }
 
-interface TopPlayersQueryResponse {
+export interface TopPlayersQueryResponse {
     allScores: TopPlayersQueryItem[];
 };
 

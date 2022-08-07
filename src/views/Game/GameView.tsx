@@ -1,4 +1,7 @@
+import { useQuery } from "@apollo/client";
+import { max } from "lodash";
 import React, { useEffect } from "react";
+import { topPlayersQuery } from "../../api/queries/getLeaderBoardQuery";
 import { ButtonTitle, StartGameButton } from "../../components/Button";
 import { EmptyTile, GameContainer, GridRow, Playground, Tile } from "../../components/Game";
 import {
@@ -12,9 +15,20 @@ import {
     ScoreTitle,
 } from "../../components/Scores";
 import { useGame } from "../../hooks/useGame";
+import { TopPlayersQueryResponse } from "../LeaderBoard/LeaderBoardView";
 
 export const GameView: React.FC = () => {
     const {score, game, moveLeft, moveRight, moveUp, moveDown} = useGame();
+
+    const {data} = useQuery<TopPlayersQueryResponse>(topPlayersQuery, {
+        variables: {
+            first: 1,
+            sortBy: "score_DESC",
+            where: {
+                score_gte: 0
+            }
+        }
+    });
 
     useEffect(() => {
         window.addEventListener("keyup", (event: KeyboardEvent) => {
@@ -49,7 +63,7 @@ export const GameView: React.FC = () => {
                         </ScoreContainer>
                         <ScoreContainer>
                             <ScoreTitle>High</ScoreTitle>
-                            <div>0</div>
+                            <div>{max([data?.allScores[0].score, score])}</div>
                         </ScoreContainer>
                     </ScoresContainer>
                     <StartGameButton>
